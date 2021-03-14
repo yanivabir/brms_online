@@ -81,6 +81,11 @@ jsPsych.plugins["bRMS"] = (function() {
         default: 0,
         description: "Duration of ITI reserved for making sure stimulus image\
          is loaded."
+      },
+      isControl: { // *YH
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: false,
+        description: "If 'true', target stimulus will be presented upon the mask (on the same frame), resulting in an unmasked control"
       }
     }
   }
@@ -254,12 +259,13 @@ jsPsych.plugins["bRMS"] = (function() {
       }
 
       // Draw stimulus
+      var control = trial.isControl ? 1 : 0; // Use 1/0 in order to execute a control or brms task *YH
       var stimulus = document.createElement('canvas')
       stimulus.id = 'stimulus';
       stimulus.className = 'jspsych-brms-frame';
       stimulus.width = frameWidth;
       stimulus.height = frameHeight;
-      stimulus.style.zIndex = 0;
+      stimulus.style.zIndex = control; // if control = 0, stimulus will be drawn upon mask frames. if control = 1, stimulus will be drawn between mask frames. *YH
       stimulus.style.position = "absolute";
       stimulus.style.border = "20px double #000000";
       stimulus.style.opacity = 0;
